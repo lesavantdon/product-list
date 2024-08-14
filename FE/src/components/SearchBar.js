@@ -1,25 +1,17 @@
-import React, { useState } from 'react';
+// src/components/Search.js
+import React from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchProducts } from '../redux/productSlice';
+import { setFilters } from '../features/products/productsSlice';
 
 const Search = () => {
   const dispatch = useDispatch();
-  const [query, setQuery] = useState('');
 
-  const handleSearch = () => {
-    dispatch(fetchProducts({ search: query, page: 1 }));
+  const handleSearch = (event) => {
+    dispatch(setFilters({ query: event.target.value }));
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search products"
-      />
-      <button onClick={handleSearch}>Search</button>
-    </div>
+    <input type="text" placeholder="Search products..." onChange={handleSearch} />
   );
 };
 

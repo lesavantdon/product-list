@@ -1,21 +1,26 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchProducts } from '../redux/productSlice';
+// src/components/Filter.js
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Filter = () => {
-  const dispatch = useDispatch();
+  const [categories, setCategories] = useState([]);
 
-  const handleFilterChange = (e) => {
-    dispatch(fetchProducts({ category: e.target.value, page: 1 }));
-  };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await axios.get('http://localhost:8000/categories');
+      setCategories(response.data);
+    };
+    fetchCategories();
+  }, []);
 
   return (
-    <select onChange={handleFilterChange}>
-      <option value="">All Categories</option>
-      <option value="tools">Tools</option>
-      <option value="electronics">Electronics</option>
-      <option value="books">Books</option>
-      {/* Add more categories as needed */}
+    <select>
+      <option value="">Select Category</option>
+      {categories.map(category => (
+        <option key={category} value={category}>
+          {category}
+        </option>
+      ))}
     </select>
   );
 };

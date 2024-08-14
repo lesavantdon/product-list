@@ -1,19 +1,19 @@
+// src/components/Sort.js
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchProducts } from '../redux/productSlice';
+import { setSort } from '../features/products/productsSlice';
 
 const Sort = () => {
   const dispatch = useDispatch();
 
-  const handleSortChange = (e) => {
-    dispatch(fetchProducts({ sort: e.target.value, page: 1 }));
+  const handleSortChange = (event) => {
+    dispatch(setSort(event.target.value));
   };
 
   return (
     <select onChange={handleSortChange}>
-      <option value="">Sort by Price</option>
-      <option value="price_asc">Low to High</option>
-      <option value="price_desc">High to Low</option>
+      <option value="asc">Price: Low to High</option>
+      <option value="desc">Price: High to Low</option>
     </select>
   );
 };

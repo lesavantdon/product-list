@@ -1,28 +1,22 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPage } from '../redux/productSlice';
+// Example in ProductList.js
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
-const Pagination = ({ totalPages }) => {
-  const dispatch = useDispatch();
-  const currentPage = useSelector((state) => state.products.currentPage);
+const ProductList = () => {
+  const location = useLocation();
 
-  const handlePageChange = (page) => {
-    dispatch(setPage(page));
-  };
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const category = queryParams.get('category');
+    const sort = queryParams.get('sort');
+    // Fetch products based on these parameters
+  }, [location.search]);
 
   return (
-    <div className="pagination">
-      {Array.from({ length: totalPages }, (_, index) => (
-        <button
-          key={index}
-          onClick={() => handlePageChange(index + 1)}
-          className={currentPage === index + 1 ? 'active' : ''}
-        >
-          {index + 1}
-        </button>
-      ))}
+    <div>
+      {/* Render product list */}
     </div>
   );
 };
 
-export default Pagination;
+export default ProductList;
