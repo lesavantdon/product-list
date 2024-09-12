@@ -1,0 +1,72 @@
+/* src/assets/styles/ProductList.css */
+
+.product-list {
+  padding: 20px;
+}
+
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Space between items */
+  justify-content: center; /* Center items horizontally */
+}
+
+.product-box {
+  border: 1px solid #ddd; /* Light grey border */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 15px;
+  background-color: #fff; /* White background */
+  width: 280px; /* Fixed width */
+  text-align: center; /* Center-align text */
+  transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition for hover effects */
+}
+
+.product-box:hover {
+  transform: translateY(-5px); /* Slight lift on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+}
+
+.product-image {
+  max-width: 100%; /* Ensure image fits within the box */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 4px; /* Slightly rounded corners for image */
+}
+
+.product-info {
+  margin-top: 10px;
+}
+
+.product-info h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.product-info p {
+  margin: 5px 0;
+  color: #555; /* Dark grey text color */
+}
+
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pagination-button {
+  background-color: #007bff; /* Blue background */
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.pagination-button.active {
+  background-color: #0056b3; /* Darker blue for active button */
+}
+
+.pagination-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}

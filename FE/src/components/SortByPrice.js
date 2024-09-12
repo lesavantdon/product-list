@@ -1,21 +1,47 @@
-// src/components/Sort.js
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { setSort } from '../features/products/productsSlice';
+import React, { useState } from 'react';
+import './sortByPrice.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Import Bootstrap JS
 
-const Sort = () => {
-  const dispatch = useDispatch();
+function Sort({ onSort }) {
+  const [selectedOption, setSelectedOption] = useState('asc');
 
-  const handleSortChange = (event) => {
-    dispatch(setSort(event.target.value));
+  const handleSortChange = (option) => {
+    setSelectedOption(option);
+    onSort(option);
   };
 
   return (
-    <select onChange={handleSortChange}>
-      <option value="asc">Price: Low to High</option>
-      <option value="desc">Price: High to Low</option>
-    </select>
+    <div className="sort">
+      <h4>Sort by Price</h4>
+      <div className="dropdown">
+        <button
+          className="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          {selectedOption === 'asc' ? 'Price: Low to High' : 'Price: High to Low'}
+        </button>
+        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <button
+            className="dropdown-item"
+            onClick={() => handleSortChange('asc')}
+          >
+            Price: Low to High
+          </button>
+          <button
+            className="dropdown-item"
+            onClick={() => handleSortChange('desc')}
+          >
+            Price: High to Low
+          </button>
+        </div>
+      </div>
+    </div>
   );
-};
+}
 
 export default Sort;

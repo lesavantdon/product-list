@@ -1,36 +1,34 @@
+// controllers/reviewController.js
+
 const Product = require('../models/product');
 
-exports.getProductReviews = async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.product);
-        const page = req.query.page || 1;
-        const limit = 4;
-        const reviews = product.reviews.slice((page - 1) * limit, page * limit);
-        res.json(reviews);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+// POST /products/:id/reviews
+const addProductReview = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    product.reviews.push(req.body);
+    await product.save();
+
+    res.status(201).json(product);
+  } catch (error) {
+    console.error('Error adding review:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
-exports.addProductReview = async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.product);
-        product.reviews.push(req.body);
-        await product.save();
-        res.status(201).json(product.reviews);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
+// GET /products/:id/reviews
+const getProductReviews = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    res.json(product.reviews);
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
-exports.deleteReview = async (req, res) => {
-    try {
-        const product = await Product.findOneAndUpdate(
-            { 'reviews._id': req.params.review },
-            { $pull: { reviews: { _id: req.params.review } } }
-        );
-        res.status(204).send();
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
+module.exports = { addProductReview, getProductReviews };

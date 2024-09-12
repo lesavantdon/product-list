@@ -1,29 +1,28 @@
-// src/App.js
 import React from 'react';
-import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { store } from './store';
-import ProductList from './components/ProductList';
-import Filter from './components/filter';
-import Sort from './components/Sort';
-import Search from './components/Search';
+import HomePage from './pages/HomePage';
+import ProductPage from './pages/ProductPage';
+import ReviewPage from './pages/ReviewPage';
+import './assets/styles/App.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const App = () => {
+
+
+
+
+function App() {
   return (
-    <Provider store={store}>
-      <Router>
-        <div>
-          <Search />
-          <Filter />
-          <Sort />
-          <Routes>
-            <Route path="/" element={<ProductList />} />
-            {/* Define additional routes for different filters, sorts, etc. */}
-          </Routes>
-        </div>
-      </Router>
-    </Provider>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/products/:productId" element={<ProductPage />} />
+          <Route path="/products/:productId/reviews" element={<ReviewPage />} />
+        </Routes>
+      </div>
+    </Router>
   );
-};
+}
 
 export default App;
