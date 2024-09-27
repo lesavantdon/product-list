@@ -20,21 +20,79 @@ This is my product list with full back end and front end implementation, and you
 
 ### Front-End
 
-- **React**: ^18.2.0
-- **React DOM**: ^18.2.0
-- **Redux**: ^4.2.1
-- **Bootstrap**: ^5.3.0
-- **Next.js**: ^13.4.1 (if applicable)
-- **NProgress**: ^0.2.0
-- **Styled Components**: ^6.0.0
-- **UUID**: ^9.0.0
-- **TypeScript**: ^5.0.0
-- **ESLint**: ^8.30.0
+{
+"name": "fe",
+"version": "1.0.0",
+"description": "Frontend for the application",
+"main": "index.js",
+"scripts": {
+"start": "react-scripts start",
+"build": "react-scripts build",
+"test": "react-scripts test",
+"eject": "react-scripts eject"
+},
+"dependencies": {
+"@redux-devtools/extension": "^3.3.0",
+"axios": "^1.4.0",
+"bootstrap": "^5.3.0",
+"postcss": "^8.4.41",
+"react": "^18.2.0",
+"react-dom": "^18.2.0",
+"react-redux": "^8.0.5",
+"react-router-dom": "^6.14.0",
+"redux": "^5.0.1",
+"redux-devtools-extension": "^2.13.9",
+"redux-thunk": "^3.1.0",
+"resolve-url-loader": "^5.0.0",
+"svgo": "^3.3.2"
+},
+"devDependencies": {
+"react-scripts": "^5.0.1"
+},
+"eslintConfig": {
+"extends": [
+"react-app",
+"react-app/jest"
+]
+},
+"browserslist": {
+"production": [
+">0.2%",
+"not dead",
+"not op_mini all"
+],
+"development": [
+"last 1 chrome version",
+"last 1 firefox version",
+"last 1 safari version"
+]
+}
+}
 
 ### Back-End
 
-- **Express**: ^4.18.2
-- **Mongoose**: ^7.0.2
-- **dotenv**: ^16.0.3
-- **Chai**: ^4.3.6
-- **Axios**: ^1.4.0 (if used in the back-end)
+{
+"name": "be",
+"version": "1.0.0",
+"description": "be server",
+"main": "server.js",
+"scripts": {
+"test": "echo \"Error: no test specified\" && exit 1",
+"start": "node server.js"
+},
+"repository": {
+"type": "git",
+"url": "git+https://github.com/lesavantdon/product-list.git"
+},
+"author": "",
+"license": "ISC",
+"bugs": {
+"url": "https://github.com/lesavantdon/product-list/issues"
+},
+"homepage": "https://github.com/lesavantdon/product-list#readme",
+"dependencies": {
+"cors": "^2.8.5",
+"express": "^4.19.2",
+"mongoose": "^8.5.3"
+}
+}
