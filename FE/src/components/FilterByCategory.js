@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import './FilterByCategory.css';
+import '../assets/styles/FilterByCategory.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Import Bootstrap JS
+// In your App.js or index.js file
+import '../assets/styles/global.css'; // Adjust the path as necessary
+
 
 function FilterByCategory({ onCategoryChange }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -13,7 +16,7 @@ function FilterByCategory({ onCategoryChange }) {
 
   return (
     <div className="filter-by-category">
-      <h4>Filter by Category</h4>
+      
       <div className="dropdown">
         <button
           className="btn btn-secondary dropdown-toggle"

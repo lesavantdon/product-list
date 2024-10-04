@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPage } from '../redux/productSlice';
+import { setPage } from '../redux/productsSlice';
 
 const Pagination = ({ totalPages }) => {
   const dispatch = useDispatch();

@@ -1,16 +1,10 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import {thunk} from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import productReducer from './reducers/productReducer';
+import { configureStore } from '@reduxjs/toolkit';
+import productsReducer from '../features/products/productSlice';
 
-const rootReducer = combineReducers({
-  product: productReducer,
-  // Add more reducers here as needed
+const store = configureStore({
+  reducer: {
+    products: productsReducer,
+  },
 });
-
-const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(thunk))
-);
 
 export default store;

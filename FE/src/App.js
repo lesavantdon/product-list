@@ -1,27 +1,36 @@
+// src/App.js
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ProductPage from './pages/ProductPage';
-import ReviewPage from './pages/ReviewPage';
+import AddProductPage from './pages/AddProductPage'; // Adjust the path as necessary
+
+import { Provider } from 'react-redux';
+import store from './redux/store'; 
+
 import './assets/styles/App.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-
-
-
+// import Navbar from './components/navbar'; 
+// In your App.js or index.js file
+import './assets/styles/global.css'; // Adjust the path as necessary
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/products/:productId" element={<ProductPage />} />
-          <Route path="/products/:productId/reviews" element={<ReviewPage />} />
-        </Routes>
-      </div>
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <div className="App">
+          {/* <Navbar /> */}
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/products/:id" element={<ProductPage />} />
+            <Route path="/add-product" element={<AddProductPage/>} />
+            
+          </Routes>
+        </div>
+      </Router>
+    </Provider>
   );
 }
 

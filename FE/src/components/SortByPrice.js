@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import './sortByPrice.css';
+import '../assets/styles/sortByPrice.css';
+// In your App.js or index.js file
+import '../assets/styles/global.css'; // Adjust the path as necessary
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Import Bootstrap JS
 
@@ -13,7 +16,7 @@ function Sort({ onSort }) {
 
   return (
     <div className="sort">
-      <h4>Sort by Price</h4>
+      
       <div className="dropdown">
         <button
           className="btn btn-secondary dropdown-toggle"

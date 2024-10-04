@@ -2,11 +2,6 @@
   margin-bottom: 20px;
 }
 
-.filter,
-.sort {
-  margin-bottom: 20px;
-}
-
 .product-list {
   display: flex;
   flex-wrap: wrap;

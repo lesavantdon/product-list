@@ -1,5 +1,5 @@
 // controllers/productController.js
-
+const mongoose = require('mongoose');
 const Product = require('../models/product.js');
 
 // GET /products
@@ -22,7 +22,7 @@ const getProducts = async (req, res) => {
 
     const total = await Product.countDocuments(queryObject);
 
-    res.json({ products, total });
+    res.json({ products, total, currentPage: page, totalPages: Math.ceil(total / limit) });
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -32,8 +32,16 @@ const getProducts = async (req, res) => {
 // GET /products/:id
 const getProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const { id } = req.params;
+
+    // Check if the provided ID is a valid MongoDB ObjectID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid product ID' });
+    }
+
+    const product = await Product.findById(id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
+
     res.json(product);
   } catch (error) {
     console.error('Error fetching product:', error);
@@ -41,23 +49,39 @@ const getProduct = async (req, res) => {
   }
 };
 
-// POST /products
 const createProduct = async (req, res) => {
+  
+  const { name, description, price, category, image, userName } = req.body;
+  console.log('Request product data:', req.body);
+  
   try {
-    const newProduct = new Product(req.body);
-    await newProduct.save();
-    res.status(201).json(newProduct);
+    // Validate that all required fields are provided
+    if (!name || !description || !price || !category || !image || !userName) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    const product = new Product({ name, description, price, category, image, userName });
+    await product.save(); // Save the new product in the database
+    res.status(201).json(product); // Respond with the created product
   } catch (error) {
-    console.error('Error creating product:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error('Error creating product:', error); // Log the error to the console
+    res.status(500).json({ message: 'Error creating product', error: error.message }); // Include the error message in the response
   }
 };
 
-// DELETE /products/:id
+
 const deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+
+    // Check if the provided ID is a valid MongoDB ObjectID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid product ID' });
+    }
+
+    const product = await Product.findByIdAndDelete(id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
+
     res.json({ message: 'Product deleted' });
   } catch (error) {
     console.error('Error deleting product:', error);
