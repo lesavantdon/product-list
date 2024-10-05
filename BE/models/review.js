@@ -1,6 +1,6 @@
-// models/Review.js
 const mongoose = require('mongoose');
 
+// Review Schema
 const reviewSchema = new mongoose.Schema({
   user: { type: String, required: true },
   rating: { type: Number, required: true },

@@ -23,8 +23,8 @@ app.get('/', (req, res) => {
     res.send('Welcome to the API');
 });
 
-app.use('/api/products', productsRoutes); // Use the product router
-app.use('/api/products', reviewsRoutes); 
+app.use('/api/products', productsRoutes); 
+app.use('/api/reviews', reviewsRoutes); 
 
 
 app.use((req, res) => {

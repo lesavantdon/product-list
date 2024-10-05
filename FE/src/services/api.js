@@ -1,73 +1,61 @@
 // src/services/api.js
 
-import axios from 'axios';
+const API_URL = 'http://localhost:5000/api/products';
+const API_URLr = 'http://localhost:5000/api/reviews'
 
-// Create an Axios instance with default configuration
-const apiClient = axios.create({
-  baseURL: 'http://localhost:5000/api', // Your base URL here
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Fetch a single product
-export const fetchProduct = async (productId) => {
-  try {
-    const response = await apiClient.get(`/products/${productId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching product:', error);
-    throw error;
+export const fetchProduct = async (id) => {
+  const response = await fetch(`${API_URL}/${id}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
   }
+  return await response.json();
 };
 
-// Add a Review
+export const fetchReviews = async (productId) => {
+  const response = await fetch(`${API_URLr}/${productId}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return await response.json();
+};
+
 export const addReview = async (productId, reviewData) => {
-  try {
-    const response = await apiClient.post(`/products/${productId}/reviews`, reviewData);
-    console.log('Review added:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error adding review:', error);
-    throw error;
-  }
-};
+  // Ensure rating is a number
+  const dataToSend = {
+      ...reviewData,
+      productId: productId, // This adds the productId to the object
+      rating: Number(reviewData.rating), // Ensure rating is a number
+  };
 
+  const response = await fetch(`${API_URLr}/${productId}`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataToSend), // Send the complete object
+  });
 
-// Fetch Reviews
-export const fetchReviews = async (productId, page) => {
-  try {
-    const response = await apiClient.get(`/products/${productId}/reviews`, {
-      params: { page }
-    });
-    console.log('Reviews:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching reviews:', error);
-    throw error;
+  if (!response.ok) {
+      throw new Error('Failed to add review');
   }
-};
 
-//delete reviews//
-export const deleteReview = async (productId, reviewId) => {
-  try {
-    const response = await apiClient.delete(`/products/${productId}/reviews/${reviewId}`);
-    console.log('Review deleted:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting review:', error);
-    throw error;
-  }
+  return await response.json(); // Returns the newly added review
 };
 
 
 
-export const deleteProduct = async (productId) => {
-  try {
-    const response = await axios.delete(`http://localhost:5000/api/products/${productId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting product: ', error);
-    throw error;
+export const deleteReview = async ( reviewId) => {
+  try{
+  const response = await fetch(`${API_URLr}/${reviewId}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
   }
+  const data = await response.json();
+  return data; // Return the response from the delete operation
+} catch (error) {
+  console.error('Error deleting review:', error);
+  throw error; // Propagate the error for further handling
+}
 };

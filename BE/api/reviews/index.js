@@ -1,15 +1,17 @@
-// api/reviews/index.js
 const express = require('express');
 const router = express.Router();
-const {
-  addProductReview,
-  getProductReviews,
-  deleteProductReview
-} = require('../../controllers/reviewController');
+const reviewController = require('../../controllers/reviewController'); // Make sure the path is correct
 
 
-router.post('/:productId/reviews', addProductReview); // Use controller function
-router.get('/:productId/reviews', getProductReviews); // Use controller function
-router.delete('/:productId/reviews/:reviewId', deleteProductReview); 
+// In your reviews route file (e.g., api/reviews/index.js)
 
-module.exports = router; 
+router.get('/', reviewController.getAllReviews);
+router.post('/:productId', reviewController.createReview); // Create a new review
+router.get('/:productId', reviewController.getReviewsByProductId); 
+router.get('/reviews/:productId', getPaginatedReviewsByProductId);
+
+router.delete('/:reviewId', reviewController.deleteReview); 
+
+
+module.exports = router;
+

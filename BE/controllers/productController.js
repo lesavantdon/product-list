@@ -1,92 +1,132 @@
-// controllers/productController.js
-const mongoose = require('mongoose');
-const Product = require('../models/product.js');
+const Product = require('../models/product');
 
-// GET /products
-const getProducts = async (req, res) => {
+// Get all products with pagination, filtering, and sorting
+const getAllProducts = async (req, res) => {
+  const { page = 1, limit = 9, category = 'all', sort = 'asc' } = req.query;
+
+  const query = {};
+  // Filter by category if not 'all'
+  if (category && category !== 'all') {
+    query.category = category;
+  }
+
   try {
-    const { page = 1, limit = 9, query, sort, category } = req.query;
+    // Get total count of products for pagination
+    const totalProducts = await Product.countDocuments(query);
+    
+    // Calculate the number of products to skip
+    const skip = (page - 1) * limit;
+    
+    // Fetch the products from the database
+    const products = await Product.find(query)
+      .sort({ price: sort === 'asc' ? 1 : -1 }) // Sort by price
+      .skip(skip) // Skip the appropriate number of products
+      .limit(parseInt(limit)); // Limit the number of results
+    
+    // Calculate total pages
+    const totalPages = Math.ceil(totalProducts / limit);
 
-    const queryObject = {};
-    if (query) {
-      queryObject.name = { $regex: query, $options: 'i' };
-    }
-    if (category && category !== 'all') {
-      queryObject.category = category;
-    }
-
-    const products = await Product.find(queryObject)
-      .sort({ price: sort === 'asc' ? 1 : -1 })
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit));
-
-    const total = await Product.countDocuments(queryObject);
-
-    res.json({ products, total, currentPage: page, totalPages: Math.ceil(total / limit) });
+    // Send the response
+    res.json({
+      products,
+      totalPages
+    });
   } catch (error) {
-    console.error('Error fetching products:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching products.' });
   }
 };
 
-// GET /products/:id
-const getProduct = async (req, res) => {
+
+// Get a single product by ID
+const getProductById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
-
-    // Check if the provided ID is a valid MongoDB ObjectID
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid product ID' });
-    }
-
     const product = await Product.findById(id);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found.' });
+    }
 
     res.json(product);
   } catch (error) {
-    console.error('Error fetching product:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching product.' });
   }
 };
 
+// Create a new product
 const createProduct = async (req, res) => {
-  
-  const { name, description, price, category, image, userName } = req.body;
-  console.log('Request product data:', req.body);
-  
-  try {
-    // Validate that all required fields are provided
-    if (!name || !description || !price || !category || !image || !userName) {
-      return res.status(400).json({ message: 'All fields are required.' });
-    }
+  const { userName, name, description, price, category, image } = req.body;
 
-    const product = new Product({ name, description, price, category, image, userName });
-    await product.save(); // Save the new product in the database
-    res.status(201).json(product); // Respond with the created product
+  if (!userName || !name || !description || !price || !category || !image) {
+    return res.status(400).json({ message: 'All fields are required.' });
+  }
+
+  try {
+    const newProduct = new Product({
+      userName,
+      name,
+      description,
+      price,
+      category,
+      image
+    });
+
+    const savedProduct = await newProduct.save();
+    res.status(201).json(savedProduct);
   } catch (error) {
-    console.error('Error creating product:', error); // Log the error to the console
-    res.status(500).json({ message: 'Error creating product', error: error.message }); // Include the error message in the response
+    console.error(error);
+    res.status(500).json({ message: 'Error creating product.' });
   }
 };
 
+// Update a product by ID
+const updateProduct = async (req, res) => {
+  const { id } = req.params;
+  const { userName, name, description, price, category, image } = req.body;
 
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      { userName, name, description, price, category, image },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found.' });
+    }
+
+    res.json(updatedProduct);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating product.' });
+  }
+};
+
+// Delete a product by ID
 const deleteProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    // Check if the provided ID is a valid MongoDB ObjectID
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid product ID' });
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(id);
+
+    if (!deletedProduct) {
+      return res.status(404).json({ message: 'Product not found.' });
     }
 
-    const product = await Product.findByIdAndDelete(id);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
-
-    res.json({ message: 'Product deleted' });
+    res.status(200).json({ message: 'Product deleted successfully.' });
   } catch (error) {
-    console.error('Error deleting product:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ message: 'Error deleting product.' });
   }
 };
 
-module.exports = { getProducts, getProduct, createProduct, deleteProduct };
+module.exports = {
+  getAllProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct
+};

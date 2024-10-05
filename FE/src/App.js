@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ProductIdProvider } from './contexts/ProductIdContext';
 import HomePage from './pages/HomePage';
 import ProductPage from './pages/ProductPage';
 import AddProductPage from './pages/AddProductPage'; // Adjust the path as necessary
@@ -19,6 +20,7 @@ import './assets/styles/global.css'; // Adjust the path as necessary
 function App() {
   return (
     <Provider store={store}>
+      <ProductIdProvider>
       <Router>
         <div className="App">
           {/* <Navbar /> */}
@@ -30,6 +32,7 @@ function App() {
           </Routes>
         </div>
       </Router>
+      </ProductIdProvider>
     </Provider>
   );
 }

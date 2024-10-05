@@ -2,51 +2,58 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios'; 
 import ReviewForm from '../components/ReviewForm';
+import ReviewList from '../components/ReviewList';
+import { fetchProduct, fetchReviews, } from '../services/api'; // Adjusted imports
+import useProductId from '../hooks/useProductId';
+
+
 const ProductPage = () => {
-  const { id } = useParams(); // Get the product ID from the URL params
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [reviews, setReviews] = useState([]);
+  const { setProductId } = useProductId();
+
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/products/${id}`);
-        setProduct(response.data);
-        setReviews(response.data.reviews || []);
-        setLoading(false);
+        console.log(id)
+        
+        const productData = await fetchProduct(id);
+        setProduct(productData);
+        setProductId(productData._id);
+        
+        const reviewsData = await fetchReviews(id);
+        console.log('Fetching reviews for product ID:', id);
+
+        setReviews(reviewsData || []);
       } catch (error) {
         console.error('Error fetching product:', error);
+      } finally {
         setLoading(false);
       }
     };
+    fetchData();
+  }, [id, setProductId]);
 
-    fetchProduct();
-  }, [id]);
-
-  const handleReviewAdded = (newReview) => {
-    setReviews((prevReviews) => [...prevReviews, newReview]);
+  const addReview = (newReview) => {
+    setReviews((prevReviews) => {
+      // Check if the new review already exists in the current reviews
+      const isDuplicate = prevReviews.some(
+        (review) => review.user === newReview.user && review.review === newReview.review
+      );
+      // If not duplicate, add the new review
+      return isDuplicate ? prevReviews : [...prevReviews, newReview];
+    });
+  };
+  const handleDelete = (reviewId) => {
+    setReviews((prevReviews) => prevReviews.filter((review) => review._id !== reviewId));
   };
 
-  const handleDeleteReview = async (reviewId) => {
-    try {
-      const response = await axios.delete(`http://localhost:5000/api/products/${id}/reviews/${reviewId}`); // Use `id` directly here
-      console.log('Review deleted:', response.data);
-      setReviews((prevReviews) => prevReviews.filter(review => review._id !== reviewId));
-    } catch (error) {
-      console.error('Error deleting review:', error);
-    }
-  };
-
-  if (loading) {
-    return <div>Loading product...</div>;
-  }
-
-  if (!product) {
-    return <div>Product not found</div>;
-  }
+  if (loading) return <div>Loading product...</div>;
+  if (!product) return <div>Product not found</div>;
 
   return (
     <div>
@@ -55,21 +62,11 @@ const ProductPage = () => {
       <p>Category: {product.category}</p>
       <p>Price: ${product.price}</p>
       <p>Description: {product.description}</p>
+      
+      <h2>Reviews</h2>
+      <ReviewList reviews={reviews}  productId={id} onDelete={handleDelete} />
 
-      <div>
-        <h1>Reviews</h1>
-        {reviews.length > 0 ? (
-          reviews.map((review) => (
-            <div key={review._id}>
-              <p><strong>{review.user}</strong>: {review.review} (Rating: {review.rating}/5)</p>
-              <button onClick={() => handleDeleteReview(review._id)}>Delete Review</button> {/* Correctly pass review._id */}
-            </div>
-          ))
-        ) : (
-          <p>No reviews available for this product.</p>
-        )}
-      </div>
-      <ReviewForm productId={id} onReviewAdded={handleReviewAdded} />
+      <ReviewForm  onReviewAdded={addReview} />
     </div>
   );
 };
