@@ -8,7 +8,7 @@ const reviewController = require('../../controllers/reviewController'); // Make 
 router.get('/', reviewController.getAllReviews);
 router.post('/:productId', reviewController.createReview); // Create a new review
 router.get('/:productId', reviewController.getReviewsByProductId); 
-router.get('/reviews/:productId', getPaginatedReviewsByProductId);
+router.get('/reviews/:productId', reviewController.getPaginatedReviewsByProductId);
 
 router.delete('/:reviewId', reviewController.deleteReview); 
 
