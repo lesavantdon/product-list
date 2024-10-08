@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import ProductList from '../components/ProductList';
 import Search from '../components/Search';
 import FilterByCategory from '../components/FilterByCategory';
-import Sort from '../components/sortByPrice';
+import Sort from '../components/SortByPrice';
 import '../assets/styles/global.css';
 import { Link } from 'react-router-dom';
 
